@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get "categories/show"
+  get "products/index"
+  get "products/show"
   devise_for :admin_users
 
   devise_scope :admin_user do
@@ -6,4 +9,8 @@ Rails.application.routes.draw do
   end
 
   ActiveAdmin.routes(self)
+  root "products#index"
+
+resources :products, only: %i[index show]
+resources :categories, only: :show
 end

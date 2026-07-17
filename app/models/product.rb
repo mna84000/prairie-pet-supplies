@@ -1,5 +1,6 @@
 class Product < ApplicationRecord
   belongs_to :category
+  has_one_attached :image
 
   validates :name, presence: true
   validates :description, presence: true
@@ -23,6 +24,6 @@ class Product < ApplicationRecord
   end
 
   def self.ransackable_associations(_auth_object = nil)
-    ["category"]
+    [ "category" ]
   end
 end

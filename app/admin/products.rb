@@ -4,18 +4,28 @@ ActiveAdmin.register Product do
                 :price,
                 :stock_quantity,
                 :active,
-                :category_id
+                :category_id,
+                :image
 
   index do
-    selectable_column
-    id_column
-    column :name
-    column :category
-    column :price
-    column :stock_quantity
-    column :active
-    actions
+  selectable_column
+  id_column
+
+  column :image do |product|
+    if product.image.attached?
+      image_tag url_for(product.image), width: 60, height: 60
+    else
+      "No image"
+    end
   end
+
+  column :name
+  column :category
+  column :price
+  column :stock_quantity
+  column :active
+  actions
+end
 
   filter :name
   filter :category
@@ -30,8 +40,32 @@ ActiveAdmin.register Product do
       f.input :stock_quantity
       f.input :active
       f.input :category
+      f.input :image, as: :file
     end
 
     f.actions
   end
+
+  show do
+  attributes_table do
+    row :id
+    row :name
+    row :description
+    row :price
+    row :stock_quantity
+    row :active
+    row :category
+
+    row :image do |product|
+      if product.image.attached?
+        image_tag url_for(product.image), width: 250
+      else
+        "No image uploaded"
+      end
+    end
+
+    row :created_at
+    row :updated_at
+  end
+end
 end
