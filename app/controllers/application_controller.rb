@@ -1,7 +1,19 @@
 class ApplicationController < ActionController::Base
   private
 
-  def after_sign_out_path_for(_resource_or_scope)
-    new_admin_user_session_path
+  def after_sign_in_path_for(resource)
+    if resource.is_a?(AdminUser)
+      admin_root_path
+    else
+      super
+    end
+  end
+
+  def after_sign_out_path_for(resource_or_scope)
+    if resource_or_scope == :admin_user
+      new_admin_user_session_path
+    else
+      root_path
+    end
   end
 end
