@@ -1,0 +1,58 @@
+<h1>Your Shopping Cart</h1>
+
+<p><%= link_to "Continue Shopping", products_path %></p>
+
+<% if notice.present? %>
+  <p><strong><%= notice %></strong></p>
+<% end %>
+
+<% if alert.present? %>
+  <p><strong><%= alert %></strong></p>
+<% end %>
+
+<% if @cart_items.any? %>
+  <% total = 0 %>
+
+  <% @cart_items.each do |item| %>
+    <% product = item[:product] %>
+    <% quantity = item[:quantity] %>
+    <% subtotal = product.price * quantity %>
+    <% total += subtotal %>
+
+    <div>
+      <h2><%= product.name %></h2>
+
+      <% if product.image.attached? %>
+        <%= image_tag product.image, width: 120 %>
+      <% end %>
+
+      <p>Category: <%= product.category.name %></p>
+      <p>Price: <%= number_to_currency(product.price) %></p>
+
+      <%= form_with url: update_cart_path(product),
+                    method: :patch,
+                    local: true do |form| %>
+        <%= form.label :quantity, "Quantity" %>
+        <%= form.number_field :quantity,
+                              value: quantity,
+                              min: 1 %>
+        <%= form.submit "Update Quantity" %>
+      <% end %>
+
+      <%= button_to "Remove Item",
+                    remove_from_cart_path(product),
+                    method: :delete,
+                    data: {
+                      turbo_confirm: "Remove this item from your cart?"
+                    } %>
+
+      <p>Subtotal: <%= number_to_currency(subtotal) %></p>
+    </div>
+
+    <hr>
+  <% end %>
+
+  <h2>Cart Total: <%= number_to_currency(total) %></h2>
+<% else %>
+  <p>Your shopping cart is empty.</p>
+<% end %>
