@@ -1,0 +1,93 @@
+<h1>Invoice</h1>
+
+<p>
+  <strong>Order number:</strong>
+  <%= @order.id %>
+</p>
+
+<p>
+  <strong>Customer:</strong>
+  <%= @order.customer.first_name %>
+  <%= @order.customer.last_name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @order.customer.email %>
+</p>
+
+<h2>Shipping Address</h2>
+
+<p>
+  <%= @order.customer.address %><br>
+  <%= @order.customer.city %>,
+  <%= @order.customer.province.name %><br>
+  <%= @order.customer.postal_code %>
+</p>
+
+<h2>Purchased Products</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Unit Price</th>
+      <th>Line Total</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @order.order_items.each do |item| %>
+      <tr>
+        <td><%= item.product.name %></td>
+        <td><%= item.quantity %></td>
+        <td><%= number_to_currency(item.unit_price) %></td>
+        <td>
+          <%= number_to_currency(item.unit_price * item.quantity) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h2>Invoice Totals</h2>
+
+<p>
+  <strong>Subtotal:</strong>
+  <%= number_to_currency(@order.subtotal) %>
+</p>
+
+<% if @order.gst.positive? %>
+  <p>
+    <strong>GST:</strong>
+    <%= number_to_currency(@order.gst) %>
+  </p>
+<% end %>
+
+<% if @order.pst.positive? %>
+  <p>
+    <strong>PST:</strong>
+    <%= number_to_currency(@order.pst) %>
+  </p>
+<% end %>
+
+<% if @order.hst.positive? %>
+  <p>
+    <strong>HST:</strong>
+    <%= number_to_currency(@order.hst) %>
+  </p>
+<% end %>
+
+<p>
+  <strong>Total:</strong>
+  <%= number_to_currency(@order.total) %>
+</p>
+
+<p>
+  Thank you for your purchase.
+</p>
+
+<p>
+  <%= link_to "Continue Shopping", products_path %>
+</p>

@@ -1,0 +1,104 @@
+<h1>Checkout</h1>
+
+<h2>Order Summary</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Line Total</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @cart_items.each do |item| %>
+      <tr>
+        <td><%= item[:product].name %></td>
+        <td><%= item[:quantity] %></td>
+        <td><%= number_to_currency(item[:product].price) %></td>
+        <td>
+          <%= number_to_currency(
+                item[:product].price * item[:quantity]
+              ) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p>
+  <strong>Subtotal:</strong>
+  <%= number_to_currency(@subtotal) %>
+</p>
+
+<h2>Customer and Shipping Information</h2>
+
+<% if @customer.errors.any? %>
+  <div>
+    <h3>Please correct these errors:</h3>
+
+    <ul>
+      <% @customer.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: @customer,
+              url: checkout_path,
+              method: :post do |form| %>
+
+  <div>
+    <%= form.label :first_name %>
+    <%= form.text_field :first_name, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :last_name %>
+    <%= form.text_field :last_name, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :email %>
+    <%= form.email_field :email, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :address %>
+    <%= form.text_field :address, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :city %>
+    <%= form.text_field :city, required: true %>
+  </div>
+
+  <div>
+    <%= form.label :province_id, "Province or Territory" %>
+
+    <%= form.collection_select(
+          :province_id,
+          @provinces,
+          :id,
+          :name,
+          { prompt: "Select a province or territory" },
+          { required: true }
+        ) %>
+  </div>
+
+  <div>
+    <%= form.label :postal_code %>
+    <%= form.text_field :postal_code, required: true %>
+  </div>
+
+  <div>
+    <%= form.submit "Place Order" %>
+  </div>
+<% end %>
+
+<p>
+  <%= link_to "Return to Cart", cart_path %>
+</p>

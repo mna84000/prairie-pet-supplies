@@ -1,19 +1,26 @@
 class ApplicationController < ActionController::Base
-  private
+  before_action :configure_permitted_parameters, if: :devise_controller?
 
-  def after_sign_in_path_for(resource)
-    if resource.is_a?(AdminUser)
-      admin_root_path
-    else
-      super
-    end
-  end
+  protected
 
-  def after_sign_out_path_for(resource_or_scope)
-    if resource_or_scope == :admin_user
-      new_admin_user_session_path
-    else
-      root_path
-    end
+  def configure_permitted_parameters
+    customer_fields = %i[
+      first_name
+      last_name
+      address
+      city
+      postal_code
+      province_id
+    ]
+
+    devise_parameter_sanitizer.permit(
+      :sign_up,
+      keys: customer_fields
+    )
+
+    devise_parameter_sanitizer.permit(
+      :account_update,
+      keys: customer_fields
+    )
   end
 end

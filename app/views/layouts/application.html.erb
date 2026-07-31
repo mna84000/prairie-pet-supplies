@@ -24,6 +24,28 @@
   </head>
 
   <body>
-    <%= yield %>
-  </body>
+  <% flash.each do |type, message| %>
+    <p><%= message %></p>
+  <% end %>
+
+  <nav style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+  <%= link_to "Home", root_path %>
+
+  <% if customer_signed_in? %>
+    <span>
+      Logged in as <%= current_customer.email %>
+    </span>
+
+    <%= button_to "Log out",
+                  destroy_customer_session_path,
+                  method: :delete,
+                  form: { style: "display: inline; margin: 0;" } %>
+  <% else %>
+    <%= link_to "Sign up", new_customer_registration_path %>
+    <%= link_to "Log in", new_customer_session_path %>
+  <% end %>
+</nav>
+
+  <%= yield %>
+</body>
 </html>

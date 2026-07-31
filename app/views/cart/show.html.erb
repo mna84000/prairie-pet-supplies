@@ -52,7 +52,11 @@
     <hr>
   <% end %>
 
-  <h2>Cart Total: <%= number_to_currency(total) %></h2>
+    <h2>Cart Total: <%= number_to_currency(total) %></h2>
+
+  <p>
+    <%= link_to "Proceed to Checkout", checkout_path %>
+  </p>
 <% else %>
   <p>Your shopping cart is empty.</p>
 <% end %>
