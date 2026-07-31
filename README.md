@@ -21,4 +21,12 @@ Things you may want to cover:
 
 * Deployment instructions
 
+## Customer Features
+
+- Customer registration
+- Customer login
+- Customer logout
+- Province selection
+- Address management
+
 * ...
