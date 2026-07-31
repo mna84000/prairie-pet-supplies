@@ -25,7 +25,9 @@
 
   <body>
   <% flash.each do |type, message| %>
-    <p class="flash-message"><%= message %></p>
+  <div class="flash-message">
+  <%= message %>
+</div>
   <% end %>
 <!-- Customer authentication navigation -->
   <nav style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
