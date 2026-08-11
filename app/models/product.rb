@@ -1,5 +1,12 @@
 class Product < ApplicationRecord
   belongs_to :category
+
+  has_many :product_tags, dependent: :destroy
+  has_many :tags, through: :product_tags
+
+  has_many :order_items, dependent: :restrict_with_error
+  has_many :orders, through: :order_items
+
   has_one_attached :image
 
   validates :name, presence: true
@@ -20,6 +27,9 @@ class Product < ApplicationRecord
       category_id
       created_at
       updated_at
+      category
+    product_tags
+    tags
     ]
   end
 
