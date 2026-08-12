@@ -1,0 +1,87 @@
+<div class="py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="mb-1">Order #<%= @order.id %></h1>
+      <p class="text-muted mb-0">
+        <%= @order.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+      </p>
+    </div>
+
+    <%= link_to "Back to My Orders",
+                orders_path,
+                class: "btn btn-outline-secondary" %>
+  </div>
+
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h4 mb-0">Products</h2>
+
+        <span class="badge bg-secondary">
+          <%= @order.status.to_s.titleize %>
+        </span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Quantity</th>
+              <th>Unit Price</th>
+              <th>Line Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% @order.order_items.each do |item| %>
+              <tr>
+                <td><%= item.product.name %></td>
+                <td><%= item.quantity %></td>
+                <td><%= number_to_currency(item.unit_price) %></td>
+                <td>
+                  <%= number_to_currency(item.unit_price * item.quantity) %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h2 class="h4 mb-3">Order Totals</h2>
+
+      <div class="row g-3">
+        <div class="col-6 col-md-3">
+          <strong>Subtotal</strong>
+          <div><%= number_to_currency(@order.subtotal) %></div>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <strong>GST</strong>
+          <div><%= number_to_currency(@order.gst) %></div>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <strong>PST</strong>
+          <div><%= number_to_currency(@order.pst) %></div>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <strong>HST</strong>
+          <div><%= number_to_currency(@order.hst) %></div>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <strong>Grand Total</strong>
+          <div class="fs-4 fw-bold">
+            <%= number_to_currency(@order.total) %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
