@@ -17,4 +17,6 @@ Rails.application.routes.draw do
   get "checkout", to: "checkout#new", as: :checkout
   post "checkout", to: "checkout#create"
   get "invoice/:id", to: "checkout#show", as: :invoice
+
+  resources :orders, only: %i[index show]
 end
