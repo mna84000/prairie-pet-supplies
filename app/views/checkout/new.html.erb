@@ -1,104 +1,143 @@
-<h1>Checkout</h1>
+<div class="py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Checkout</h1>
 
-<h2>Order Summary</h2>
-
-<table>
-  <thead>
-    <tr>
-      <th>Product</th>
-      <th>Quantity</th>
-      <th>Price</th>
-      <th>Line Total</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @cart_items.each do |item| %>
-      <tr>
-        <td><%= item[:product].name %></td>
-        <td><%= item[:quantity] %></td>
-        <td><%= number_to_currency(item[:product].price) %></td>
-        <td>
-          <%= number_to_currency(
-                item[:product].price * item[:quantity]
-              ) %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<p>
-  <strong>Subtotal:</strong>
-  <%= number_to_currency(@subtotal) %>
-</p>
-
-<h2>Customer and Shipping Information</h2>
-
-<% if @customer.errors.any? %>
-  <div>
-    <h3>Please correct these errors:</h3>
-
-    <ul>
-      <% @customer.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
-
-<%= form_with model: @customer,
-              url: checkout_path,
-              method: :post do |form| %>
-
-  <div>
-    <%= form.label :first_name %>
-    <%= form.text_field :first_name, required: true %>
+    <%= link_to "Return to Cart",
+                cart_path,
+                class: "btn btn-outline-secondary" %>
   </div>
 
-  <div>
-    <%= form.label :last_name %>
-    <%= form.text_field :last_name, required: true %>
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h2 class="h4 mb-3">Order Summary</h2>
+
+          <div class="table-responsive">
+            <table class="table table-striped align-middle">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Line Total</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% @cart_items.each do |item| %>
+                  <tr>
+                    <td><%= item[:product].name %></td>
+                    <td><%= item[:quantity] %></td>
+                    <td><%= number_to_currency(item[:product].price) %></td>
+                    <td>
+                      <%= number_to_currency(
+                            item[:product].price * item[:quantity]
+                          ) %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="text-end mt-3">
+            <strong class="fs-5">
+              Subtotal: <%= number_to_currency(@subtotal) %>
+            </strong>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="h4 mb-3">
+            Customer and Shipping Information
+          </h2>
+
+          <% if @customer.errors.any? %>
+            <div class="alert alert-danger">
+              <h3 class="h6">Please correct these errors:</h3>
+
+              <ul class="mb-0">
+                <% @customer.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <%= form_with model: @customer,
+                        url: checkout_path,
+                        method: :post do |form| %>
+
+            <div class="mb-3">
+              <%= form.label :first_name, class: "form-label" %>
+              <%= form.text_field :first_name,
+                                  required: true,
+                                  class: "form-control" %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :last_name, class: "form-label" %>
+              <%= form.text_field :last_name,
+                                  required: true,
+                                  class: "form-control" %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :email, class: "form-label" %>
+              <%= form.email_field :email,
+                                   required: true,
+                                   class: "form-control" %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :address, class: "form-label" %>
+              <%= form.text_field :address,
+                                  required: true,
+                                  class: "form-control" %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :city, class: "form-label" %>
+              <%= form.text_field :city,
+                                  required: true,
+                                  class: "form-control" %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :province_id,
+                             "Province or Territory",
+                             class: "form-label" %>
+
+              <%= form.collection_select(
+                    :province_id,
+                    @provinces,
+                    :id,
+                    :name,
+                    { prompt: "Select a province or territory" },
+                    {
+                      required: true,
+                      class: "form-select"
+                    }
+                  ) %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :postal_code, class: "form-label" %>
+              <%= form.text_field :postal_code,
+                                  required: true,
+                                  class: "form-control" %>
+            </div>
+
+            <%= form.submit "Place Order",
+                            class: "btn btn-success w-100" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div>
-    <%= form.label :email %>
-    <%= form.email_field :email, required: true %>
-  </div>
-
-  <div>
-    <%= form.label :address %>
-    <%= form.text_field :address, required: true %>
-  </div>
-
-  <div>
-    <%= form.label :city %>
-    <%= form.text_field :city, required: true %>
-  </div>
-
-  <div>
-    <%= form.label :province_id, "Province or Territory" %>
-
-    <%= form.collection_select(
-          :province_id,
-          @provinces,
-          :id,
-          :name,
-          { prompt: "Select a province or territory" },
-          { required: true }
-        ) %>
-  </div>
-
-  <div>
-    <%= form.label :postal_code %>
-    <%= form.text_field :postal_code, required: true %>
-  </div>
-
-  <div>
-    <%= form.submit "Place Order" %>
-  </div>
-<% end %>
-
-<p>
-  <%= link_to "Return to Cart", cart_path %>
-</p>
+</div>
