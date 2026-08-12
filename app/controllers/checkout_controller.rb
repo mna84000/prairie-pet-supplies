@@ -1,10 +1,12 @@
+require "securerandom"
+
 class CheckoutController < ApplicationController
   before_action :load_cart, only: %i[new create]
 
   def new
     redirect_to cart_path, alert: "Your cart is empty." and return if @cart_items.empty?
 
-    @customer = Customer.new
+    @customer = customer_signed_in? ? current_customer : Customer.new
     @provinces = Province.order(:name)
     @subtotal = calculate_subtotal
   end
@@ -12,9 +14,23 @@ class CheckoutController < ApplicationController
   def create
     redirect_to cart_path, alert: "Your cart is empty." and return if @cart_items.empty?
 
-    @customer = Customer.new(customer_params)
     @provinces = Province.order(:name)
     @subtotal = calculate_subtotal
+
+    @customer =
+      if customer_signed_in?
+        current_customer
+      else
+        Customer.find_or_initialize_by(email: customer_params[:email])
+      end
+
+    @customer.assign_attributes(customer_params)
+
+    if @customer.new_record?
+      generated_password = SecureRandom.hex(16)
+      @customer.password = generated_password
+      @customer.password_confirmation = generated_password
+    end
 
     unless @customer.valid?
       render :new, status: :unprocessable_entity
