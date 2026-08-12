@@ -2,52 +2,101 @@
 <html>
   <head>
     <title><%= content_for(:title) || "Prairie Pet Supplies" %></title>
+
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Prairie Pet Supplies">
     <meta name="mobile-web-app-capable" content="yes">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    >
   </head>
 
   <body>
-  <% flash.each do |type, message| %>
-  <div class="flash-message">
-  <%= message %>
-</div>
-  <% end %>
-<!-- Customer authentication navigation -->
-  <nav style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-  <%= link_to "Home", root_path %>
+    <nav class="navbar navbar-expand-lg bg-dark navbar-dark mb-4">
+      <div class="container">
+        <%= link_to "Prairie Pet Supplies",
+                    root_path,
+                    class: "navbar-brand" %>
 
-  <% if customer_signed_in? %>
-    <span>
-      Logged in as <%= current_customer.email %>
-    </span>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#mainNavbar"
+          aria-controls="mainNavbar"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <%= button_to "Log out",
-                  destroy_customer_session_path,
-                  method: :delete,
-                  form: { style: "display: inline; margin: 0;" } %>
-  <% else %>
-    <%= link_to "Sign up", new_customer_registration_path %>
-    <%= link_to "Log in", new_customer_session_path %>
-  <% end %>
-</nav>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <%= link_to "Home",
+                          root_path,
+                          class: "nav-link" %>
+            </li>
 
-  <%= yield %>
-</body>
+            <% if customer_signed_in? %>
+              <li class="nav-item">
+                <%= link_to "My Orders",
+                            orders_path,
+                            class: "nav-link" %>
+              </li>
+            <% end %>
+          </ul>
+
+          <div class="d-flex align-items-center gap-2">
+            <% if customer_signed_in? %>
+              <span class="text-light small">
+                Logged in as <%= current_customer.email %>
+              </span>
+
+              <%= button_to "Log out",
+                            destroy_customer_session_path,
+                            method: :delete,
+                            class: "btn btn-outline-light btn-sm" %>
+            <% else %>
+              <%= link_to "Sign up",
+                          new_customer_registration_path,
+                          class: "btn btn-outline-light btn-sm" %>
+
+              <%= link_to "Log in",
+                          new_customer_session_path,
+                          class: "btn btn-light btn-sm" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container">
+      <% flash.each do |type, message| %>
+        <div class="alert <%= type.to_s == 'alert' ? 'alert-danger' : 'alert-success' %>">
+          <%= message %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
+    </script>
+  </body>
 </html>
