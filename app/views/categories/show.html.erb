@@ -1,17 +1,36 @@
-<p><%= link_to "Back to All Products", products_path %></p>
+<div class="py-4">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <%= link_to "Home", root_path %>
+      </li>
 
-<h1><%= @category.name %></h1>
+      <li class="breadcrumb-item active" aria-current="page">
+        <%= @category.name %>
+      </li>
+    </ol>
+  </nav>
 
-<p><%= @category.description %></p>
+  <%= link_to "← Back to All Products",
+              products_path,
+              class: "btn btn-outline-secondary mb-4" %>
 
-<% if @products.any? %>
+  <div class="mb-4">
+    <h1><%= @category.name %></h1>
+    <p class="lead"><%= @category.description %></p>
+  </div>
 
-  <%= render @products %>
+  <% if @products.any? %>
+    <div class="row">
+      <%= render @products %>
+    </div>
 
-  <%= paginate @products %>
-
-<% else %>
-
-  <p>No active products are available in this category.</p>
-
-<% end %>
+    <div class="mt-4">
+      <%= paginate @products %>
+    </div>
+  <% else %>
+    <div class="alert alert-info">
+      No active products are available in this category.
+    </div>
+  <% end %>
+</div>
